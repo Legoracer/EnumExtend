@@ -5,6 +5,7 @@
 local USE_ORIGINAL_ENUMS_AS_BASE = true
 
 local OriginalEnum = Enum
+local Enums = {}
 local EnumExtend = {}
 local Enum = require(script.Enum)
 
@@ -23,31 +24,31 @@ do -- Compile original enums
 				enum:SetEnumItem(name, value)
 			end
 			
-			EnumExtend[name] = enum
+			Enums[name] = enum
 		end
 	end
 end
 
 function EnumExtend:GetEnums()
 	local e = {}
-	for i,v in pairs(self) do e[#e=1]=v end
+	for i,v in pairs(Enums) do e[#e=1]=v end
 	return e
 end
 
 function EnumExtend:AddEnum(name)
-	if self[name] then
+	if Enums[name] then
 		error(('Enum %s already exists'):format(name))
 	else
 		local e = Enum.new(name)
-		self[name] = e
+		Enums[name] = e
 		
 		return e
 	end
 end
 
 function EnumExtend:RemoveEnum(name)
-	if self[name] then
-		self[name] = nil
+	if Enums[name] then
+		Enums[name] = nil
 	else
 		error(("Enum %s doesn't exist"):format(name))
 	end
