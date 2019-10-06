@@ -7,14 +7,6 @@ Enum.__index = Enum
 
 local EnumItem = require(script.Parent.EnumItem)
 
-function get(t, n)
-	for i,v in pairs(t) do
-		if v.Name == n then
-			return v
-		end
-	end
-end
-
 function Enum.new(name)
 	assert(type(name)=='string', 'Invalid Enum name')
 	
@@ -28,7 +20,7 @@ function Enum.new(name)
 	self._proxy = proxy
 	
 	mt.__index = function(_, k)
-		local enumItem = get(self._enums, k)
+		local enumItem = self._enums[k]
 		local f = self[k]
 		
 		if enumItem then
@@ -52,14 +44,14 @@ end
 
 function Enum:GetEnumItems()
 	local nt = {}
-	for k,v in pairs(self._enums) do nt[k]=v end
+	for k,v in pairs(self._enums) do nt[#nt+1]=v end
 	return nt
 end
 
 function Enum:SetEnumItem(name, value)
 	assert(type(name)=='string', 'Invalid EnumItem name')
 	
-	self._enums[#self._enums+1] = EnumItem.new(name, value, self._proxy)
+	self._enums[name] = EnumItem.new(name, value, self._proxy)
 end
 
 return Enum
