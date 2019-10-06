@@ -28,6 +28,12 @@ do -- Compile original enums
 	end
 end
 
+function EnumExtend:GetEnums()
+	local e = {}
+	for i,v in pairs(self) do e[#e=1]=v end
+	return e
+end
+
 function EnumExtend:AddEnum(name)
 	if self[name] then
 		error(('Enum %s already exists'):format(name))
