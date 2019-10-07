@@ -3,11 +3,18 @@
 -- @date        10/6/2019
 
 local USE_ORIGINAL_ENUMS_AS_BASE = true
+local DEBUG_MODE = false
 
 local OriginalEnum = Enum
+
 local Enums = {}
 local EnumExtend = {}
 local Enum = require(script.Enum)
+
+local _print = print;
+local _warn = warn;
+function print(...) if DEBUG_MODE then _print(...) end end
+function warn(...) if DEBUG_MODE then _warn(...) end end
 
 do -- Compile original enums
 	if USE_ORIGINAL_ENUMS_AS_BASE then
@@ -31,7 +38,7 @@ end
 
 function EnumExtend:GetEnums()
 	local e = {}
-	for i,v in pairs(Enums) do e[#e=1]=v end
+	for i,v in pairs(Enums) do e[#e+1]=v end
 	return e
 end
 
@@ -54,4 +61,17 @@ function EnumExtend:RemoveEnum(name)
 	end
 end
 
-return EnumExtend
+return setmetatable(EnumExtend, {
+	__index = function(_, k)
+		local f = rawget(EnumExtend, k)
+		local e = Enums[k]
+		
+		if f then
+			return f
+		elseif e then
+			return e
+		else
+			return error(k, "is not valid Enum")
+		end
+	end
+})
