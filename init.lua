@@ -53,6 +53,19 @@ function EnumExtend:AddEnum(name)
 	end
 end
 
+function EnumExtend:AddEnumFromModule(module)
+	local src = require(module)
+	assert(type(src)=='table', "Invalid Enum module")
+	assert(Enums[module.Name], ("Enum %s already exists"):format(module.Name))
+	
+	local enum = Enum.new(module.Name)
+	for i,v in pairs(src) do
+		enum:SetEnumItem(v, i)
+	end
+	
+	Enums[module.Name] = enum
+end
+
 function EnumExtend:RemoveEnum(name)
 	if Enums[name] then
 		Enums[name] = nil
